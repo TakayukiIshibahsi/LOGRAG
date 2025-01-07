@@ -22,7 +22,9 @@ class TestClassifier(unittest.TestCase):
         """
         正常な分類を確認
         """
-        predictions = self.classifier.predict(self.sample_input)
+        predictions = []
+        for input in self.sample_input:
+            predictions.append(self.classifier.predict(input))
         self.assertEqual(len(predictions), len(self.expected_output), "出力数が期待と一致しません")
         
         for pred, expected in zip(predictions, self.expected_output):
