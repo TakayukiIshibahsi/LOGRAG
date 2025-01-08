@@ -33,7 +33,6 @@ class LLMClient:
         }
         
         response = requests.post(self.api_url, headers=headers, json=payload)
-        print("!log",response.json())
         response_text = response.json()[0]['generated_text'].strip()
 
         return response_text

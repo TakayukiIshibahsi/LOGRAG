@@ -5,6 +5,9 @@ class Classifier:
         self.client = LLMClient()
 
     def predict(self, text: str):
+        if not text or len(text) == 0:
+            raise ValueError("Input text is empty.")
+
         inputs = f"""
             Categories:
             1- World
