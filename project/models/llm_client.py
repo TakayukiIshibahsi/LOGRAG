@@ -34,7 +34,6 @@ class LLMClient:
         }
         
         response = requests.post(self.api_url, headers=headers, json=payload)
-        print(response)
         while (response.status_code == 429):
             retry_after = int(response.headers.get("Retry-After", 100))  # デフォルトは1秒
             print(f"Rate limit hit. Retrying after {retry_after} seconds...")
