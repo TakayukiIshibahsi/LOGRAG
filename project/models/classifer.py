@@ -15,8 +15,10 @@ class Classifier:
             3- Business
             4- Sci/Tech
 
-            Please decide only one category for the following text:
-            {text}
+            Please decide only one category for the following text and respond with the format:
+            "Category: <number> - <name>"
+
+            Text: {text}
             """
         response = self.client.llm(inputs)
         return response

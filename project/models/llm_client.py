@@ -1,5 +1,6 @@
 import requests
 import os
+import time
 
 class LLMClient:
     def __init__(self):
@@ -33,6 +34,12 @@ class LLMClient:
         }
         
         response = requests.post(self.api_url, headers=headers, json=payload)
+        print(response)
+        while (response.status_code == 429):
+            retry_after = int(response.headers.get("Retry-After", 100))  # デフォルトは1秒
+            print(f"Rate limit hit. Retrying after {retry_after} seconds...")
+            time.sleep(retry_after)
+            response = requests.post(self.api_url, headers=headers, json=payload)
         response_text = response.json()[0]['generated_text'].strip()
 
         return response_text

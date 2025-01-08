@@ -1,5 +1,6 @@
 import unittest
 from models.classifer import Classifier
+from modules.extract_categories import Extract_categories
 
 class TestClassifier(unittest.TestCase):
     def setUp(self):
@@ -7,6 +8,7 @@ class TestClassifier(unittest.TestCase):
         テストのセットアップ処理
         """
         self.classifier = Classifier()  # 必要に応じて変更
+        self.extract_categories = Extract_categories()
         self.sample_input = [
             "As Michael Kaleko kept running into people who were getting older and having more vision problems, he realized he could do something about it.",
             "TheDeal.com - The U.K. mobile giant wants to find a way to disentagle the Czech wireless and fixed-line businesses",
@@ -28,7 +30,7 @@ class TestClassifier(unittest.TestCase):
         self.assertEqual(len(predictions), len(self.expected_output), "出力数が期待と一致しません")
         
         for pred, expected in zip(predictions, self.expected_output):
-            print(f"予測結果{pred}\n正答:{expected}")
+            print(f"予測結果{self.extract_categories.extract(pred)}\n正答:{expected}")
 
     # def test_empty_input(self):
     #     """
