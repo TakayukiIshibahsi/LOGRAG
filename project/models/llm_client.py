@@ -35,10 +35,15 @@ class LLMClient:
         
         response = requests.post(self.api_url, headers=headers, json=payload)
         while (response.status_code == 429):
-            retry_after = int(response.headers.get("Retry-After", 100))  # デフォルトは1秒
+            retry_after = int(response.headers.get("Retry-After", 4000))  # デフォルトは1秒
             print(f"Rate limit hit. Retrying after {retry_after} seconds...")
             time.sleep(retry_after)
             response = requests.post(self.api_url, headers=headers, json=payload)
+        if response.json() == {'error': 'Model too busy, unable to get response in less than 60 second(s)'}:
+            print("Model too busy. Retrying after 60 seconds...")
+            time.sleep(60)
+            response = requests.post(self.api_url, headers=headers, json=payload)
+        print(response.json())
         response_text = response.json()[0]['generated_text'].strip()
 
         return response_text
