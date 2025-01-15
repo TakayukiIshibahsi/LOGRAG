@@ -5,5 +5,5 @@ class Updater:
         self.memory = memory
 
     def update(self, key, value):
-        self.memory.set(key, value)
+        self.memory.save(key, value)
         
