@@ -43,4 +43,4 @@ class Retrieval_classifier:
 
 if __name__ == "__main__":
     retrieval_classifier=Retrieval_classifier()
-    retrieval_classifier.classify()
+    retrieval_classifier.classify(8)

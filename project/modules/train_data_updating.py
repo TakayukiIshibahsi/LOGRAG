@@ -13,17 +13,14 @@ class Train_data_updating:
         self.file_path = file_path
         self.rows_to_load = rows_to_load
         
-        # ディレクトリが存在しない場合は作成
         os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
         
-        # 必要なら空のダミーデータを保存して初期化
         if not os.path.exists(self.file_path):
             dummy_data = [{"memory": [], "metadata": [{}]}]
             with open(self.file_path, "wb") as file:
                 pickle.dump(dummy_data, file)
             print(f"Dummy pickle file created at: {self.file_path}")
 
-        # CSV ファイルのロード（指定行数のみ読み込み）
         self.df = pd.read_csv('data/raw/train.csv', nrows=self.rows_to_load)
         self.memory = Memory(embeddings='best', memory_file=self.file_path)
         self.updater = Updater(self.memory)
@@ -38,7 +35,7 @@ class Train_data_updating:
         count = 0
 
         for text, title, expected in zip(self.df['Description'], self.df['Title'], self.df['Class Index']):
-            metadata = {"Title": title, "Class Index": expected}
+            metadata = {"Title": title, "Class Index": expected,"reliability": 1}
             metadatas.append(metadata)
             texts.append(text)
             count += 1
@@ -60,5 +57,5 @@ if __name__ == "__main__":
     rows_to_update = 60000
     file_path = "data/custom_vectordb_half.pkl"
 
-    updater = Train_data_updating(file_path=file_path, rows_to_load=rows_to_update)
+    updater = Train_data_updating()
     updater.update(threshold=50)
