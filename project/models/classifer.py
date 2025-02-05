@@ -1,8 +1,8 @@
-from .llm_client import LLMClient
+from .llm_client_groq import LLMClient_groq
 
 class Classifier:
     def __init__(self):
-        self.client = LLMClient()
+        self.client = LLMClient_groq()
 
     def predict(self, text: str,auto=True):
         if not text or len(text) == 0:

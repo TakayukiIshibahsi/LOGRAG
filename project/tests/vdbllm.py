@@ -7,13 +7,19 @@ import csv,os
 
 
 df = pd.read_csv('data/raw/test.csv')
-log_file = "log/vdbllm_detail_log.csv"
+log_file = "log/vdbllm_detail_log_rank=1.csv"
 if not os.path.exists(log_file):
     with open(log_file, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=["id", "rank","retrieve_class","pred", "expected"])
         writer.writeheader()  # ヘッダー行を追加
         print(f"Initialized new CSV file: {log_file}")
 
+log_file2 = "log/vdbllm_normal_log_rank=1.csv"
+if not os.path.exists(log_file2):
+    with open(log_file2, mode="w", newline="", encoding="utf-8") as file2:
+        writer = csv.DictWriter(file2, fieldnames=["id","pred", "expected"])
+        writer.writeheader()  # ヘッダー行を追加
+        print(f"Initialized new CSV file: {log_file2}")
 
 class vdbllm:
     def __init__(self):
@@ -22,11 +28,12 @@ class vdbllm:
         self.classifier = Classifier()
     
     def classify(self):
-      rank = 8
+      rank = 1
       true_num = 0
       false_num = 0
       log_df = pd.read_csv(log_file)
-      start=len(log_df)-1
+      log_df2 = pd.read_csv(log_file2)
+      start=len(log_df)//rank -2
       for k,(data, expected) in enumerate(zip(df['Description'], df['Class Index'])):
           if(k>start):
               
@@ -36,7 +43,7 @@ class vdbllm:
                   candidate_class = candidate['metadata']['Class Index']
                   prompt = Prompt_maker(candidate_class,candidate['chunk']).get_prompt(data)
                   num = self.extract_categories.extract(self.classifier.predict(prompt,False))
-                  log_df = pd.DataFrame([[k+1,l+1,candidate_class,num, expected]], columns=["id", "pred", "expected"])
+                  log_df = pd.DataFrame([[k+1,l+1,candidate_class,num, expected]], columns=["id", "rank","retrieve_class","pred", "expected"])
                   log_df.to_csv(log_file, mode="a", header=False, index=False)
                   if num in pred_dict.keys():
                       pred_dict[num]+=candidate['distance']
@@ -46,6 +53,8 @@ class vdbllm:
               # 予測結果を比較
               pred = str(max_key)  # 予測結果を文字列に変換
               print(f"pred:{pred} expected:{expected}")
+              log_df2 = pd.DataFrame([[k+1,pred, expected]], columns=["id","pred", "expected"])
+              log_df2.to_csv(log_file2, mode="a", header=False, index=False)
               print(f"True: {true_num}, False: {false_num}")
               if pred == str(expected):
                   true_num += 1

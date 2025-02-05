@@ -4,7 +4,7 @@ from modules.extract_categories import Extract_categories
 import csv,os
 
 df = pd.read_csv('data/raw/test.csv')
-log_file = "log.csv"
+log_file = "log_groq.csv"
 if not os.path.exists(log_file):
     with open(log_file, mode="w", newline="", encoding="utf-8") as file:
         writer = csv.DictWriter(file, fieldnames=["id", "pred", "expected"])
